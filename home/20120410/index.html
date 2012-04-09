@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>D2-编写可维护可扩展的JS组件</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/home/frame.css" />
+</head>
+
+<body>
+<header id="header">
+    <h1>编写可维护可扩展的JS组件</h1>
+</header>
+<div id="content">
+    <nav>
+        <ol>
+            <li>目的</li>
+            <li>命名</li>
+            <li>注释</li>
+            <li>代码分块</li>
+            <li>复用</li>
+            <li>稳定</li>
+            <li>增强</li>
+            <li>调试</li>
+            <li>结束</li>
+        </ol>
+    </nav>
+    <div id="body">
+        <div class="wrap">
+        <section class="item">
+            <h2>目的</h2>
+            <dl class="content">
+                <dt>可维护：</dt>
+                <dd>容易随需求变化（可读 复用 稳定）</dd>
+                <dt>可扩展：</dt>
+                <dd>增加新内容，而不影响旧的内容（增强）</dd>
+            </dl>
+        </section>
+        
+        <section class="item">
+            <h2>可读</h2>
+            <article class="content">
+                <header><h3>命名规范</h3></header>
+                <p>原则：<em>类名</em> <em>常量</em> <em>方法/属性</em> <em>局部变量</em> 要能比较容易的区分出来</p>
+                <span>举例：</span>
+                <ul>
+                    <li>类，方法，属性用驼峰命名方法，类名首字母大写；</li>
+                    <li>局部变量用单词下划线分开（如果只有一个单词，则在前面加下划线）；</li>
+                    <li>常量全部大写，单词用下划线分开</li>
+                </ul>
+                <pre>
+        <code>
+        (function() {
+            var MY_CONST = '常量';
+
+            var MyClass = function() {
+                this.myAttribute = '方法/属性';
+            }
+            
+            var temp_var = '临时变量'; 
+            var _var = '临时变量';                        
+        })();
+        </code>
+                </pre>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>可读</h2>
+            <article class="content">
+                <header><h3>注释规范</h3></header>
+                <p>注释规范可以参考：<a href="http://usejsdoc.org/">http://usejsdoc.org/</a></p>
+                <strong>主要的几个标记：</strong>
+                <ul>
+                    <li>@fileoverview：描述一个文件的内容</li>
+                    <li>@requires：描述文件依赖</li>
+                    <li>@property：描述一个属性</li>
+                    <li>@method/@function：描述一个函数或方法</li>
+                    <li>@param/@arg/@argument：描述函数的参数</li>
+                    <li>@example：描述一个例子</li>
+                    <li>@ignore：没具体意义，让jsDoc忽略的标记</li>
+                </ul>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>可读</h2>
+            <article class="content">
+                <header><h3>代码分块</h3></header>
+                <p>代码部分要明显区分：<em>核心部分</em> <em>配置部分</em> <em>过程部分</em> <em>钩子</em></p>
+                <span>举例：</span>
+                <pre>
+        <code>
+        (function() {
+            var _msg;
+            
+            var WORD = 'hello world';
+            var _tpl = '&lt;p&gt;%word%&lt;/p&gt;';
+            
+            var core = {
+                alert: function() {
+                    formatMsg();
+                    $.alert(_msg);
+                }
+            }
+            
+            function formatMsg() {
+                _msg = $.template(_tpl, {
+                    word: WORD
+                });
+            }
+            
+            $.extend(window.Toolkit, core);
+        })();
+        </code>
+                </pre>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>复用</h2>
+            <article class="content">
+                <header><h3>提高组件复用性的一些想法</h3></header>
+                <ul>
+                    <li>处理好代码的依赖关系（注释，特性检测，自依赖）</li>
+                    <li>逻辑和界面分离（HTML模板化）<a href="sample/sample1.html">例子</a></li>
+                    <li>用构造函数（多实例）</li>
+                </ul>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>稳定</h2>
+            <article class="content">
+                <header><h3>核心代码不频繁改动</h3></header>
+                <ul>
+                    <li>DOM事件代理</li>
+                    <li>组件消息订阅机制（自己的逻辑自己处理） <a href="sample/sample2.html">例子</a></li>
+                    <li>命令模式 <a href="sample/sample3.html">例子</a></li>
+                    <li>安全沙箱</li>
+                </ul>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>增强</h2>
+            <article class="content">
+                <header><h3>不修改核心代码的条件下，附加新功能</h3></header>
+                <ul>
+                    <li>多预留配置项</li>
+                    <li>业务细分，关键节点设置回调函数</li>
+                    <li>可中断的业务流程</li>
+                </ul>
+                <p><a href="sample/sample4.html">例子</a></p>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>调试</h2>
+            <article class="content">
+                <header><h3>让调试有针对性一点</h3></header>
+                <p>有debug开关，在关键位置输入有用的数据信息；</p>
+                <p>对于一些与业务无关，纯功能性的代码可以编写测试案例进行单元测试（改你代码的人会感谢你）<a href="sample/sample5.html">例子</a></p>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>结束</h2>
+            <p class="content">
+                以上只是在理想状态中，对如何组织和管理 javascript 代码的一些想法，实际项目上要权衡取舍。
+            </p>
+        </section>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var menuSetting = {
+    '目的': 0,
+    '命名': 1,
+    '注释': 2,
+    '代码分块': 3,
+    '复用': 4,
+    '稳定': 5,
+    '增强': 6,
+    '调试': 7,
+    '结束': 8
+}
+</script>
+<script src="/home/frame.js" type="text/javascript"></script>
+</body>
+</html>

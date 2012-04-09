@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>D2-编写可维护可扩展的JS组件</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../demo.css" />
+</head>
+<body>
+<header id="header">
+    <h1>消息订阅机制</h1>
+</header>
+<div id="content">
+    <nav>
+        <ol>
+            <li>传统方式</li>
+            <li>利用消息订阅机制</li>
+            <li>消息管理器模型</li>
+            <li>消息管理器 level up</li>
+        </ol>
+    </nav>
+    <div id="body">
+        <div class="wrap">
+            <section class="item">
+                <h2>传统方式</h2>
+                <pre class="content">
+            <code>
+            var Tom, Lily, Lucy;
+            
+            ...（此处省略100行代码）
+            
+            Lily = {
+                goToPark: function() {
+                    Tom.takePictures();
+                }
+            };
+            
+            </code>
+                </pre>
+                
+            <ul>
+                <li>Lily去公园的过程要考虑和她无关的事情</li>
+                <li>Lily还不一定认识Tom</li>
+                <li>Tom还一定什么都要去</li>
+                <li>如果Lucy也要一起去呢</li>
+            </ul>
+            </section>
+            
+            <section class="item">
+                <h2>利用消息订阅机制</h2>
+                <pre class="content">
+            <code>
+            var Tom, Lily, Lucy;
+            
+            ...（此处省略100行代码）
+            
+            Lily = {
+                goToPark: function() {
+                    <em>$.notify('Lily go to the park');</em>
+                }
+            };
+            
+            Tom = {
+                init: function() {
+                    <em>$.listen('Lily go to the park', this.takePictures, this);</em>
+                },
+                takePictures: function() {}
+            };
+            
+            Lucy = {
+                init: function() {
+                    <em>$.listen('Lily go to the park', this.doSomething, this);</em>
+                },
+                doSomething: function() {}
+            };
+            </code>
+                </pre>
+                
+            <ul>
+                <li>Lily不用理别人去不去了，只需要告诉大家自己去公园了</li>
+                <li>Lily不需要知道其他人这时要干什么了</li>
+                <li>Tom可以自己决定要不要去了</li>
+                <li>谁有意愿的都可以在这时候去做自己想做的事</li>
+            </ul>
+            </section>
+            
+            <section class="item">
+                <h2>消息管理器模型</h2>
+                <pre class="content">
+            <code>
+            var msgMgr = {
+                cache: {},
+                notify: function(evt) {
+                
+                    ...（此处省略100行代码）
+
+                    $.forEach(this.cache[evt], function(item) {
+                        var 
+                            _callback = item.cb,
+                            _context = item.ctx;
+                            
+                        _callback.apply(_context || NULL);
+                    });
+                },
+                listen: function(evt, callback, context) {
+                
+                    ...（此处省略100行代码）
+                
+                    <em>this.cache[evt].push({cb: callback, ctx: context});</em>
+                }
+            };
+            </code>
+                </pre>
+            </section>
+            
+            <section class="item">
+                <h2>消息管理器 level up</h2>
+                <pre class="content">
+            <code>
+            var MsgMgr = function() {};
+            MsgMgr.prototype = {
+                cache: {},
+                notify: function(evt/*, arg1, arg2*/) {
+                    
+                    <em>var _args = [].splice.call(arguments, 1);</em>
+                
+                    ...（此处省略100行代码）
+
+                    $.forEach(this.cache[evt], function(item) {
+                        var 
+                            _callback = item.cb,
+                            _context = item.ctx;
+                            
+                        _callback.apply(_context || NULL, _args);
+                    });
+                },
+                listen: function(evt, callback, context) {
+                
+                    ...（此处省略100行代码）
+                
+                    this.cache[evt].push({cb: callback, ctx: context});
+                },
+                <em>remove: function(evt, ctx) </em>{
+                    
+                    var _callbacks = this.cache[evt];
+                
+                    ...（此处省略100行代码）
+                
+                    if(ctx) {
+                        var new_callbacks = [];
+                    
+                        $.forEach(_callbacks, function(item) {
+                            if(!item.ctx != ctx) {
+                                new_callbacks[new_callbacks.length] = item;
+                            }
+                        });
+                        
+                        this.cache[evt] = new_callbacks;
+                        
+                    }else {                    
+                        this.cache[evt] = null;
+                        delete this.cache[evt];
+                    }
+                }
+            };
+            <em>
+            var msgGroup1 = new MsgMgr();
+            var msgGroup2 = new MsgMgr();
+            </em>
+            </code>
+                </pre>
+            <ul>
+                <li>用实例来进行分组处理</li>
+                <li>给notify方法添加参数，增加扩展性</li>
+                <li>增加remove方法，在某些情况下，可以去除多余事件</li>
+            </ul>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var menuSetting = {
+    '传统方式': 0,
+    '利用消息订阅机制': 1,
+    '消息管理器模型': 2,
+    '消息管理器 level up': 3,
+}
+</script>
+<script src="../demo.js" type="text/javascript"></script>
+</body>
+</html>

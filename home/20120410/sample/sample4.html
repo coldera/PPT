@@ -113,7 +113,9 @@
                     }
                     function chiZaoCang() {
                         if(typeof callback.beforeChiZaoCang == 'function') {
+                            <em>
                             if(callback.beforeChiZaoCang() === false) return;
+                            </em>
                         }
                     
                         ...（此处省略100行代码）
@@ -156,7 +158,9 @@
                     }
                     function chiZaoCang() {
                         if(typeof callback.beforeChiZaoCang == 'function') {
-                            if(callback.beforeChiZaoCang() === false) <em>throw('beforeChiZaoCang');</em>
+                            if(callback.beforeChiZaoCang() === false) {
+                                <em>throw('beforeChiZaoCang');</em>
+                            }
                         }
                     
                         ...（此处省略100行代码）

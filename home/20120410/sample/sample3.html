@@ -101,10 +101,31 @@
             var cpnMgr = {
                 cache: [],
                 add: function(name, cpn) {
-                
+                    var _component;
+                    
                     ...（此处省略100行代码）
                 
-                    this.cache.push({n: name, o: cpn});
+                    <em>
+                    if(get_type(cpn) == 'Array') {
+                        var
+                            _constructor = cpn[0];
+                            _args = cpn.slice(1);
+                            
+                            ...（此处省略100行代码）
+                        
+                            _component = new _constructor(_args0, _args1, _args2 ...);
+                        
+                    }else if(get_type(cpn) == 'Object') {
+                        _component = cpn;
+                        
+                    }else if(get_type(cpn) == 'Function') {
+                        _component = new cpn();
+                        
+                    }
+                    </em>
+                    
+                    this.cache.push({n: key, o: _component});                    
+                    <em>_component.cpnMgr = this;</em>
                 },
                 remove: function(name) {
                     var new_cache = [];
@@ -116,13 +137,17 @@
                     this.cache = new_cache;
                 },
                 cmd: function(key, name) {
-                    var _args = [].slice.call(arguments, 2);
+                    var 
+                        return_value,
+                        _args = [].slice.call(arguments, 2);
                         
                     _util.forEach(this.cache, function(cpn) {
                         if(typeof cpn.o[cmd] === 'function') {
-                            cpn.o[cmd].apply(cpn.o, _args);
+                            return_value = cpn.o[cmd].apply(cpn.o, _args);
                         }
                     });
+                    
+                    <em>return return_value;</em>
                 }
             };
             </code>

@@ -80,7 +80,7 @@
                     
                     this.cache = new_cache;
                 },
-                cmd: function(key, name) {
+                cmd: function(key) {
                     var _args = [].slice.call(arguments, 2);
                         
                     _util.forEach(this.cache, function(cpn) {
@@ -142,8 +142,10 @@
                         _args = [].slice.call(arguments, 2);
                         
                     _util.forEach(this.cache, function(cpn) {
-                        if(typeof cpn.o[cmd] === 'function') {
-                            return_value = cpn.o[cmd].apply(cpn.o, _args);
+                        <em>if(!name || name === 'all' || name.indexOf(cpn.n)) </em>{
+                            if(typeof cpn.o[cmd] === 'function') {
+                                return_value = cpn.o[cmd].apply(cpn.o, _args);
+                            }
                         }
                     });
                     

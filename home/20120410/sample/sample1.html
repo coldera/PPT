@@ -87,7 +87,7 @@
                 <pre class="content">
             <code>
             var feedBuilder = (function() {
-                var _tpl = '&lt;p&gt;%user%说：%word%&lt;/p&gt;';
+                <em>var _tpl = '&lt;p&gt;%user%说：%word%&lt;/p&gt;';</em>
                 
                 return {
                     makeItem: function(data) {
@@ -155,7 +155,7 @@
                             
                         ...（此处省略100行代码）
                         
-                        _html = $.formater(this.getCache('feed'), {
+                        _html = $.formater(<em>this.getCache('feed'),</em> {
                             user: data.user,
                             word: data.word
                         });

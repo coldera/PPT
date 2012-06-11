@@ -10,9 +10,34 @@
 <script>
 var _console = document.querySelector('#console');
 function assert(title, result) {
-    var p = document.createElement('p');
-    p.innerHTML = '<strong>'+title+': </strong><span>'+result+'</span>';
-    _console.appendChild(p);
+    var frag = document.createDocumentFragment();
+
+    if(typeof result == 'object') {
+        var p = document.createElement('p');
+        p.innerHTML = '<strong>===== '+title+' =====</strong>';
+        frag.appendChild(p);
+        
+        var dl = document.createElement('dl');
+        for(var i in result) {
+            if(result.hasOwnerProperty(i)) {
+                ul.innerHTML += '<dt>'+i+': </dt><dd>'+result[i]+'</dd>';
+                if(typeof result[i] == 'object') {
+                    assert(title+'::'+i, result[i]);
+                }
+            }
+        }
+        frag.appendChild(dl);
+        
+        p = document.createElement('p');
+        p.innerHTML = '<strong>================</strong>';
+        frag.appendChild(p);
+    }else {
+        var p = document.createElement('p');
+        p.innerHTML = '<strong>'+title+': </strong><span>'+result+'</span>';
+        frag.appendChild(p);
+    }
+    
+    _console.appendChild(frag);
     window.console && console.log(title+' === '+ result);
 }
 
@@ -20,6 +45,12 @@ assert('window.DocumentTouch对象', window.DocumentTouch);
 assert('支持touchstart事件', 'ontouchstart' in window);
 assert('支持ontouchmove事件', 'ontouchmove' in window);
 assert('支持ontouchend事件', 'ontouchend' in window);
+
+if('ontouchstart' in window) {
+    document.addEventListener('touchstart', function() {
+        assert('touch事件参数', arguments);
+    }, false);
+}
 
 </script>
 </body>

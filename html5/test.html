@@ -17,6 +17,9 @@ function assert(title, result) {
 }
 
 assert('window.DocumentTouch对象', window.DocumentTouch);
+assert('支持touchstart事件', 'ontouchstart' in window);
+assert('支持ontouchmove事件', 'ontouchmove' in window);
+assert('支持ontouchend事件', 'ontouchend' in window);
 
 </script>
 </body>

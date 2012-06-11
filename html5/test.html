@@ -1,1 +1,23 @@
-hello world
+<!DOCTYPE HTML>
+<html>
+<meta name = "viewport" content = "user-scalable=no,width=device-width" />
+<head>
+<title>HTML5 Test Demo</title>
+<meta charset="utf-8" />
+</head>
+<div id="console"></div>
+<body>
+<script>
+var console = document.querySelector('#console');
+function assert(title, result) {
+    var p = document.createElement('p');
+    p.innerHTML = '<strong>'+title+': </strong><span>'+result+'</span>';
+    console.appendChild(p);
+    window.console && console.log(title+' === '+ result);
+}
+
+assert('window.DocumentTouch对象', window.DocumentTouch);
+
+</script>
+</body>
+</html>

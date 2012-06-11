@@ -6,9 +6,18 @@
 <meta charset="utf-8" />
 </head>
 <div id="console"></div>
+<div id="tips" style="position:fixed; right:0; top:0; width:300px; opacity: 0.5;"></div>
 <body>
 <script>
 var _console = document.querySelector('#console');
+var _tips = document.querySelector('#tips');
+
+function tip(title, result) {
+    var span = document.createElement('span');
+    span.innerHTML = '<strong>'+title+'</strong><span>'+result+'</span>';
+    _tips.appendChild(span);
+}
+
 function assert(title, result) {
     var frag = document.createDocumentFragment();
 
@@ -47,7 +56,8 @@ assert('支持ontouchmove事件', 'ontouchmove' in window);
 assert('支持ontouchend事件', 'ontouchend' in window);
 
 if('ontouchstart' in window) {
-    document.addEventListener('touchstart', function() {
+    document.body.addEventListener('touchstart', function() {
+        tip('','====start====');
         assert('touch事件参数', arguments);
     }, false);
 }

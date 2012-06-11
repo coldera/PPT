@@ -8,11 +8,11 @@
 <div id="console"></div>
 <body>
 <script>
-var console = document.querySelector('#console');
+var _console = document.querySelector('#console');
 function assert(title, result) {
     var p = document.createElement('p');
     p.innerHTML = '<strong>'+title+': </strong><span>'+result+'</span>';
-    console.appendChild(p);
+    _console.appendChild(p);
     window.console && console.log(title+' === '+ result);
 }
 

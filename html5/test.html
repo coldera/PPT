@@ -5,16 +5,18 @@
 <title>HTML5 Test Demo</title>
 <meta charset="utf-8" />
 </head>
+<div id="button" style="width:300px;height:50px;border:1px dotted red;text-align:center;line-height:50px;">test</div>
 <div id="console"></div>
 <div id="tips" style="position:fixed; right:0; top:0; width:300px; opacity: 0.5;"></div>
 <body>
 <script>
 var _console = document.querySelector('#console');
 var _tips = document.querySelector('#tips');
+var _test = document.querySelector('#button');
 
-function tip(title, result) {
+function tip(str) {
     var span = document.createElement('span');
-    span.innerHTML = '<strong>'+title+'</strong><span>'+result+'</span>';
+    span.innerHTML = '<span>'+str+'</span>';
     _tips.appendChild(span);
 }
 
@@ -26,19 +28,24 @@ function assert(title, result) {
         p.innerHTML = '<strong>===== '+title+' =====</strong>';
         frag.appendChild(p);
         
-        var dl = document.createElement('dl');
+        var list = document.createElement('ul');
         for(var i in result) {
-            if(result.hasOwnerProperty(i)) {
-                ul.innerHTML += '<dt>'+i+': </dt><dd>'+result[i]+'</dd>';
-                if(typeof result[i] == 'object') {
-                    assert(title+'::'+i, result[i]);
+            if(result.hasOwnProperty(i) && result[i].toString) {
+                list.innerHTML += '<li><strong>'+i+': </strong><span>'+result[i].toString()+'</span></li>';
+                
+                if(typeof result[i] == 'object' &&  result[i] !== null && typeof result[i].nodeType == 'undefined') {
+                    setTimeout((function(attr){
+                        return function() {
+                            assert(title+'::'+attr, result[attr]);
+                        }
+                    })(i),0);
                 }
             }
         }
-        frag.appendChild(dl);
+        frag.appendChild(list);
         
         p = document.createElement('p');
-        p.innerHTML = '<strong>================</strong>';
+        p.innerHTML = '<strong>--------------------</strong>';
         frag.appendChild(p);
     }else {
         var p = document.createElement('p');
@@ -47,21 +54,68 @@ function assert(title, result) {
     }
     
     _console.appendChild(frag);
-    window.console && console.log(title+' === '+ result);
+    //window.console && console.log(title+' === '+ result);
+}
+
+function callback(e, name) {
+    if((e.touches[0] && e.touches[0].target == _test) || e.changedTouches[0].target == _test) {
+        var r = {
+            touches: '',
+            targetTouches: '',
+            changedTouches: '',
+            altKey: '',
+            metaKey: '',
+            ctrlKey: '',
+            shiftKey: '',
+            relatedTarget: '',
+            initTouchEvent: ''
+        };
+        
+        for(var i in r) {
+            if(typeof e[i] !== 'undefined') {
+                r[i] = e[i];
+            }
+        }
+        
+        assert('touchEvent', r);
+
+        setTimeout(function() {
+            assert(name, '*******************');
+        },100);
+    }       
 }
 
 assert('window.DocumentTouch对象', window.DocumentTouch);
+assert('window.TouchList对象', window.TouchList);
 assert('支持touchstart事件', 'ontouchstart' in window);
-assert('支持ontouchmove事件', 'ontouchmove' in window);
-assert('支持ontouchend事件', 'ontouchend' in window);
+assert('支持touchmove事件', 'ontouchmove' in window);
+assert('支持touchend事件', 'ontouchend' in window);
+assert('支持touchenter事件', 'ontouchenter' in window);
+assert('支持touchleave事件', 'ontouchleave' in window);
+assert('支持touchcancel事件', 'ontouchcancel' in window);
+assert('支持orientationchange事件', 'onorientationchange' in window);
+assert('支持gesturestart事件', 'ongesturestart' in window);
+assert('支持gesturechange事件', 'ongesturechange' in window);
+assert('支持gestureend事件', 'ongestureend' in window);
 
 if('ontouchstart' in window) {
-    document.body.addEventListener('touchstart', function() {
-        tip('','====start====');
-        assert('touch事件参数', arguments);
+    _test.addEventListener('touchstart', function(e) {
+        if(e.touches[0].target == _test) {
+            tip('start');
+            callback(e, 'touchstart');
+        }
+    }, false);
+    _test.addEventListener('touchcancel', function(e) {
+        tip('','cancel');
+        // callback(e, 'touchcancel');
+    }, false);
+    _test.addEventListener('touchend', function(e) {
+        if(e.changedTouches[0].target == _test) {
+            tip('end');
+            callback(e, 'touchend');
+        }
     }, false);
 }
-
 </script>
 </body>
 </html>

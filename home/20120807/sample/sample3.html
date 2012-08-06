@@ -17,6 +17,7 @@ canvas {border:1px solid #ccc; vertical-align: top;}
 <input type="button" onclick="drawArc()" value="画弧/圆"/>
 <input type="button" onclick="drawRect()" value="画矩形"/>
 <input type="button" onclick="drawCurve()" value="画曲线"/>
+<input type="button" onclick="drawText()" value="画文字"/>
 <script type="text/javascript">
 var demo = document.querySelector('#demo').getContext('2d');
 
@@ -119,6 +120,20 @@ function drawCurve() {
     demo.moveTo(50,50);
     demo.quadraticCurveTo(400,0,400,400);
     demo.stroke();
+    
+    demo.restore();
+}
+
+function drawText() {
+    demo.clearRect(0,0,576,640);
+    
+    demo.save();
+    
+    demo.fillStyle = '#ff0000';
+    demo.font = 'bold 44px sans-serif';
+    
+    demo.beginPath();
+    demo.fillText('TEXT', 200, 200);
     
     demo.restore();
 }

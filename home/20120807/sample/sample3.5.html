@@ -1,0 +1,118 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<title>Canvas Demo 1</title>
+<meta charset="utf-8" />
+
+<style>
+html {text-align: center;}
+*{padding:0;margin:0}
+canvas {border:1px solid #ccc;}
+</style>
+</head>
+<body onselectstart="return false">
+
+<canvas id="demo" width=576 height=640></canvas>
+<script type="text/javascript">
+var FACTOR = 1/8;
+var BRUSH = 2;
+var demo = document.querySelector('#demo').getContext('2d');
+
+var Core = {
+    drawing: false,
+    curPoint: {
+        x: 0,
+        y: 0,
+        s: 1
+    },
+    lastPoint: {
+        x: 0,
+        y: 0,
+        s: 1
+    },
+    init: function() {
+        event_bind();
+        
+        setInterval(function() {
+            Core.draw();
+        }, 0);
+    },
+    draw: function() {
+        if(!this.drawing) {
+            return;
+        }
+
+        var 
+            lp = Core.lastPoint,
+            cp = Core.curPoint;
+        
+        demo.save();
+        
+        if(Math.abs(lp.x-cp.x)>3 || Math.abs(lp.y-cp.y)>3 ) {
+            Core.curPoint.s -= FACTOR*10;
+        }
+        
+        demo.lineWidth = cp.s<BRUSH?BRUSH:cp.s;
+        demo.lineCap = 'round';
+        demo.beginPath();
+        demo.moveTo(lp.x||cp.x, lp.y||cp.y);
+        demo.lineTo(cp.x, cp.y);
+        demo.stroke();
+        
+        demo.restore();
+        
+        console.log(lp.x,cp.x, lp.y,cp.y)
+                
+        Core.lastPoint = {
+            x: Core.curPoint.x,
+            y: Core.curPoint.y,
+            s: Core.curPoint.s
+        };
+        
+        Core.curPoint.s += FACTOR;
+        
+    }
+}
+
+function event_bind() {
+    var el = demo.canvas;
+    el.addEventListener('mousedown', function(e) {
+
+        Core.drawing = true;
+        Core.lastPoint = {
+            x: e.x-el.offsetLeft,
+            y: e.y-el.offsetTop,
+            s: 1
+        };
+        
+        Core.curPoint = Core.lastPoint;
+    });
+    el.addEventListener('mouseup', function() {
+        Core.drawing = false;
+        Core.lastPoint = {
+            x: 0,
+            y: 0,
+            s: 1
+        };
+    });
+    el.addEventListener('mousemove', function(e) {
+        if(!Core.drawing) {
+            return;
+        }
+
+        var 
+            cx = e.x - el.offsetLeft,
+            cy = e.y - el.offsetTop;
+        
+        Core.curPoint = {
+            x: cx,
+            y: cy,
+            s: Core.curPoint.s
+        };
+    });
+}
+
+Core.init();
+</script>
+</body>
+</html>

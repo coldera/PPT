@@ -1,0 +1,128 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<title>Canvas Demo 1</title>
+<meta charset="utf-8" />
+
+<style>
+html {text-align: center;}
+canvas {border:1px solid #ccc; vertical-align: top;}
+</style>
+</head>
+<body onselectstart="return false">
+
+<canvas id="demo" width=576 height=640></canvas>
+
+<input type="button" onclick="drawLine()" value="画线"/>
+<input type="button" onclick="drawArc()" value="画弧/圆"/>
+<input type="button" onclick="drawRect()" value="画矩形"/>
+<input type="button" onclick="drawCurve()" value="画曲线"/>
+<script type="text/javascript">
+var demo = document.querySelector('#demo').getContext('2d');
+
+function drawLine() {
+    demo.clearRect(0,0,576,640);
+    
+    demo.save();
+    
+    demo.strokeStyle = '#ff0000';
+    demo.lineWidth = 4;
+    
+    demo.beginPath();
+    
+    demo.moveTo(50, 50);
+    demo.lineTo(400, 50);
+    
+    demo.stroke();
+    
+    demo.restore();
+}
+
+function drawLine() {
+    demo.clearRect(0,0,576,640);
+    
+    demo.save();
+    
+    demo.strokeStyle = '#ff0000';
+    demo.lineWidth = 4;
+    
+    demo.beginPath();
+
+    demo.translate(50,50);
+    demo.moveTo(0, 0);
+    demo.lineTo(350, 0);
+    
+    demo.stroke();
+    
+    demo.restore();
+}
+
+function drawArc() {
+    demo.clearRect(0,0,576,640);
+    
+    demo.save();
+    
+    demo.strokeStyle = '#ff0000';
+    demo.fillStyle = '#ff0000';
+    demo.lineWidth = 4;
+    
+    demo.translate(200,200);
+    demo.beginPath();
+    demo.arc(0,0,100,0,Math.PI);
+    demo.stroke();
+    
+    demo.beginPath();
+    demo.arc(0,300,100,0,2*Math.PI);
+    demo.fill();
+    
+    demo.restore();
+}
+
+function drawRect() {
+    demo.clearRect(0,0,576,640);
+    
+    demo.save();
+    
+    demo.strokeStyle = '#ff0000';
+    demo.fillStyle = '#ff0000';
+    demo.lineWidth = 4;
+    
+    demo.translate(50,50);    
+    demo.beginPath();
+    demo.rect(0,0,100,200);
+    demo.stroke();
+    
+    demo.translate(150,150);
+    demo.beginPath();
+    demo.rect(0,0,100,100);
+    demo.fill();
+    
+    demo.restore();
+}
+
+function drawCurve() {
+    demo.clearRect(0,0,576,640);
+    
+    demo.save();
+    
+    demo.strokeStyle = '#ff0000';
+    demo.fillStyle = '#ff0000';
+    demo.lineWidth = 4;
+    
+    demo.beginPath();
+    demo.bezierCurveTo(50,50,100,100,50,150);
+    demo.bezierCurveTo(50,150,0,200,50,250);
+    demo.stroke();
+    
+    
+    demo.beginPath();
+    demo.moveTo(50,50);
+    demo.quadraticCurveTo(400,0,400,400);
+    demo.stroke();
+    
+    demo.restore();
+}
+</script>    
+
+</body>
+</html>

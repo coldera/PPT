@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>canvas图形</title>
+<meta charset="utf-8">
+</head>
+<body>
+<canvas id="ctx" width="500" height="300"></canvas>
+<script type="text/javascript">
+ var ctx = document.querySelector('canvas').getContext('2d');
+ctx.save();
+
+ctx.fillStyle = '#66CC00';
+ctx.arc(200,200,100,0,Math.PI*2);
+ctx.fill();
+
+ctx.restore(); 
+</script>
+</body> 
+</html>

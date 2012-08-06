@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>D2-canvas</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../frame.css" />
+</head>
+
+<body>
+<header id="header">
+    <h1>canvas</h1>
+</header>
+<div id="content">
+    <nav>
+        <ol>
+            <li>特点</li>
+            <li>canvas vs SVG</li>
+            <li>基本图形绘制</li>
+            <li>图像基本变换</li>
+            <li>图像滤镜</li>
+            <li>图像输出</li>
+            <li>动画实现</li>
+        </ol>
+    </nav>
+    <div id="body">
+        <div class="wrap">
+        <section class="item">
+            <h2>canvas 的特点</h2>
+            <dl class="content">
+                <dt>点阵图：</dt>
+                <dd>
+                    <p>canvas绘制出来的是点阵图（<a href="sample/sample1.html" onclick="window.open(sample/sample2.html)">与矢量图对比</a>）</p>
+                    <p>可以获取canvas上所绘制所有像素的信息</p>
+                </dd>
+                <dt>重绘：</dt>
+                <dd>
+                    <p>每次对一个区域的绘制都是一个重绘的过程（没有层的概念）</p>
+                    <p>每次绘制操作后，只保留最后的结果，浏览器不缓存（记忆）绘制历史。所有绘制的图形是一个整体。</p>
+                </dd>
+            </dl>
+        </section>
+        
+        <section class="item">
+            <h2>canvas vs SVG</h2>
+            <table class="content">
+                <tr><th>canvas</th><th>SVG</th></tr>
+                <tr><td>
+                    <ul>
+                        <li>底层实现绘制操作，效率高</li>
+                        <li>点阵图形，依赖分辨率</li>
+                        <li>不支持在元素上监听事件</li>
+                        <li>适合绘制对象复杂，绘制频率高的应用</li>
+                    </ul>
+                </td><td>
+                    <ul>
+                        <li>基于XML，用于描述2D图形的标记语言</li>
+                        <li>矢量图形，不依赖分辨率</li>
+                        <li>支持在元素上监听事件</li>
+                        <li>适合绘制区域大的应用</li>
+                    </ul>
+                </td></tr>
+            </table>
+        </section>
+        
+        <section class="item">
+            <h2>基本图形绘制</h2>
+            <article class="content"> 
+                <p>
+                    <a href="sample/sample3.html">各种图形的绘制</a>
+                </p>
+                <div>
+                    <strong>图形绘制需要注意的地方</strong>
+                    <ul>
+                        <li>图形的绘制是对路径的描边或填充（调用 stroke 或 fill 才真正绘制）</li>
+                        <li>路径和样式（绘制状态）是全局的（用 save restroe beginPath 来确保每次绘制不受干扰）</li>
+                        <li>路径的中心落在像素与像素之间</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>图像基本变换</h2>
+            <article class="content">
+                <p>
+                    <a href="sample/sample4.html">各种图像操作</a>
+                </p>
+                <div>
+                    <strong>图像变换需要注意的地方</strong>
+                    <ul>
+                        <li>所有变换都会影响绘制状态，绘制状态是有历史记录的</li>
+                        <li>变换是对整个画布的变换</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+        
+        <section class="item">
+            <h2>图像滤镜</h2>
+            <div class="content">
+                <ul>
+                    <li><a href="sample/sample5.html">各种图像滤镜</a></li>
+                    <li>javascript 图像滤镜库<a href="https://github.com/alexmic/filtrr/">filtrr</a></li>
+                    <li>只能处理同域下的图像</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="item">
+            <h2>图像输出</h2>
+            <div class="content">
+                <a href="sample/sample6.html">涂鸦</a>
+                <ul>
+                    <li>base64 dataURL</li>
+                    <li>File System API</li>
+                    <li>XHR2 传输</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="item">
+            <h2>动画实现</h2>
+            <div class="content">
+                W. I. P.
+            </div>
+        </section>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var menuSetting = {
+    '特点': 0,
+    'canvas vs SVG': 1,
+    '基本图形绘制': 2,
+    '图像基本变换': 3,
+    '图像滤镜': 4,
+    '图像输出': 5,
+    '动画实现': 6
+}
+</script>
+<script src="../frame.js" type="text/javascript"></script>
+</body>
+</html>

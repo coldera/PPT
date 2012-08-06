@@ -1,0 +1,50 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<title>Canvas Demo 2</title>
+<meta charset="utf-8" />
+
+<style>
+html {text-align: center;}
+canvas {border:1px solid #ccc; vertical-align: top;}
+</style>
+</head>
+<body onselectstart="return false">
+<canvas id="demo" width=576 height=640></canvas>
+<input type="button" onclick="run()" value="开始"/>
+
+<script type="text/javascript">
+var demo = document.querySelector('#demo').getContext('2d');
+
+function patten() {
+    demo.beginPath();
+    demo.moveTo(0,0);
+    demo.lineTo(-10,-100);
+    demo.lineTo(0, -120);
+    demo.lineTo(10, -100);
+    demo.closePath();
+    demo.fill();
+}
+
+function run() {
+    demo.save();
+    demo.clearRect(0,0,576,640);
+    
+    demo.globalAlpha = 0.5;
+    demo.translate(200,200);
+    
+    var i = 0;
+    while(i++ < 26) {
+        demo.rotate(28/180*Math.PI);
+        patten();
+    }
+    demo.restore();
+}
+
+demo.save();
+demo.translate(200,200);
+patten();
+demo.restore();
+</script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 }
 a {
     color: #ff0;
+    text-decoration: none;
 }
 html {
     padding: 10px 50px 0;
@@ -12,6 +13,7 @@ html {
 body {
     padding: 10px;
     background-color: #333;
+    font-size: 1.2em;
 }
 pre {
     border: 1px dotted #ccc;
@@ -60,4 +62,7 @@ nav li {
 }
 #body .item h2, #body .item .content {
     width: 70%;
+}
+#body .item .content li {
+    line-height: 2;
 }

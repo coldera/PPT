@@ -1,0 +1,85 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<title>Canvas Demo 2</title>
+<meta charset="utf-8" />
+
+<style>
+html {text-align: center;}
+canvas {border:1px solid #ccc; vertical-align: top;}
+</style>
+</head>
+<body onselectstart="return false">
+<canvas id="demo" width=576 height=640></canvas>
+<input type="button" onclick="scale()" value="缩放"/>
+<input type="button" onclick="rotate()" value="旋转"/>
+<input type="button" onclick="move()" value="平移"/>
+<input type="button" onclick="transform()" value="矩阵变换"/>
+
+<script type="text/javascript">
+var demo = document.querySelector('#demo').getContext('2d');
+var test_image;
+
+function drawImage(file) {
+    test_image = new Image();
+    test_image.src = file.name;
+
+    test_image.onload = function() {
+        demo.clearRect(0,0,576,640);
+        var x = (576-test_image.width)/2;
+        var y = (640-test_image.height)/2;
+        
+        demo.drawImage(test_image, x, y);
+    }
+}
+
+function scale() {
+    demo.save();
+    
+    demo.clearRect(0,0,576,640);
+    demo.scale(0.5,0.5);
+    demo.drawImage(test_image, 0, 0);
+    
+    demo.restore();
+}
+
+function rotate() {
+    demo.save();
+    
+    demo.clearRect(0,0,576,640);
+    demo.translate(test_image.width, 640);
+    demo.rotate(Math.PI);
+    demo.drawImage(test_image, 0, 0);
+    
+    demo.restore();
+}
+
+function move() {
+    demo.save();
+    
+    demo.clearRect(0,0,576,640);
+    demo.translate(100, 100);
+    demo.drawImage(test_image, 0, 0);
+    
+    demo.restore();
+}
+
+function transform() {
+    demo.save();
+    
+    demo.clearRect(0,0,576,640);
+    demo.transform(0.6, -0.2, -0.2, 0.6, 150, 150);
+    demo.drawImage(test_image, 0, 0);
+    
+    demo.restore();
+}
+
+demo.canvas.addEventListener('drop', function(e) {
+    e.preventDefault();
+    
+    var file = e.dataTransfer.files[0];
+    drawImage(file);
+});
+</script>
+</body>
+</html>

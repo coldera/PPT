@@ -1,0 +1,194 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<title>Canvas Demo 1</title>
+<meta charset="utf-8" />
+
+<style>
+html {text-align: center;}
+*{padding:0;margin:0}
+body{padding: 10px;}
+canvas, img {border:1px solid #ccc; vertical-align: top;}
+</style>
+</head>
+<body onselectstart="return false">
+<canvas id="demo" width=576 height=640></canvas>
+
+<input type="button" onclick="dataURL()" value="dataURL"/>
+<input type="button" onclick="fsAPI()" value="File System API"/>
+<input type="button" onclick="XHR2()" value="XHR2"/>
+<progress min="0" max="100" value="0">0% complete</progress>
+
+<script type="text/javascript">
+var FACTOR = 1/8;
+var BRUSH = 2;
+var demo = document.querySelector('#demo').getContext('2d');
+
+var Core = {
+    drawing: false,
+    curPoint: {
+        x: 0,
+        y: 0,
+        s: 1
+    },
+    lastPoint: {
+        x: 0,
+        y: 0,
+        s: 1
+    },
+    init: function() {
+        event_bind();
+        
+        setInterval(function() {
+            Core.draw();
+        }, 0);
+    },
+    draw: function() {
+        if(!this.drawing) {
+            return;
+        }
+
+        var 
+            lp = Core.lastPoint,
+            cp = Core.curPoint;
+        
+        demo.save();
+        
+        if(Math.abs(lp.x-cp.x)>3 || Math.abs(lp.y-cp.y)>3 ) {
+            Core.curPoint.s -= FACTOR*10;
+        }
+        
+        demo.lineWidth = cp.s<BRUSH?BRUSH:cp.s;
+        demo.lineCap = 'round';
+        demo.beginPath();
+        demo.moveTo(lp.x||cp.x, lp.y||cp.y);
+        demo.lineTo(cp.x, cp.y);
+        demo.stroke();
+        
+        demo.restore();
+        
+        Core.lastPoint = {
+            x: Core.curPoint.x,
+            y: Core.curPoint.y,
+            s: Core.curPoint.s
+        };
+        
+        Core.curPoint.s += FACTOR;
+        
+    }
+}
+
+function event_bind() {
+    var el = demo.canvas;
+    el.addEventListener('mousedown', function(e) {
+
+        Core.drawing = true;
+        Core.lastPoint = {
+            x: e.x-el.offsetLeft,
+            y: e.y-el.offsetTop,
+            s: 1
+        };
+        
+        Core.curPoint = Core.lastPoint;
+    });
+    el.addEventListener('mouseup', function() {
+        Core.drawing = false;
+        Core.lastPoint = {
+            x: 0,
+            y: 0,
+            s: 1
+        };
+    });
+    el.addEventListener('mousemove', function(e) {
+        if(!Core.drawing) {
+            return;
+        }
+
+        var 
+            cx = e.x - el.offsetLeft,
+            cy = e.y - el.offsetTop;
+        
+        Core.curPoint = {
+            x: cx,
+            y: cy,
+            s: Core.curPoint.s
+        };
+    });
+}
+
+Core.init();
+
+function datauriToBlob(dataURI) {
+
+    var byteString = atob(dataURI.split(',')[1]);
+
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    var bb = new WebKitBlobBuilder();
+    bb.append(ab);
+    return bb.getBlob(mimeString);
+}
+
+function blobToFile(param, successCallback, errorCallback) {
+    var _rfs = window.requestFileSystem || window.webkitRequestFileSystem;
+    var _blob = param.blob;
+    
+    _rfs(_blob.type, _blob.size, function(fs) {
+        fs.root.getFile(param.fileName, {create: true}, function(fileEntry) {
+            fileEntry.createWriter(function(fileWriter) {
+                fileWriter.write(_blob);
+                fileWriter.onwriteend = function() {
+                    successCallback && successCallback(fileEntry.toURL());
+                }
+            }, errorCallback);
+        }, errorCallback);
+    }, errorCallback);
+}
+
+function dataURL() {
+    var base64 = demo.canvas.toDataURL('image/png');
+    window.open(base64);
+}
+
+function fsAPI() {
+    var base64 = demo.canvas.toDataURL('image/png');
+    var blob = datauriToBlob(base64);
+    blobToFile({blob: blob, fileName: 'test'}, function(url) {
+        window.open(url);
+    });
+}
+
+function upload(blobOrFile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/server.php?id=2', true);
+    xhr.onload = function(e) {
+        console.log(e);
+    };
+
+    var progressBar = document.querySelector('progress');
+    xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+            progressBar.value = (e.loaded / e.total) * 100;
+            progressBar.textContent = progressBar.value;
+        }
+    };
+
+    xhr.send(blobOrFile);
+}
+
+function XHR2() {
+    var base64 = demo.canvas.toDataURL('image/png');
+    var blob = datauriToBlob(base64);
+    upload(blob);
+}
+
+
+</script>
+</body>
+</html>
